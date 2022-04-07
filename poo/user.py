@@ -21,7 +21,7 @@ class User:
         criar_login = input("Criar login: ")
         criar_senha = input("Criar senha: ")
         if len(criar_login) > 4 or len(criar_senha) > 4:
-            print("Tente criar novamente!")
+            print("\nTente criar novamente!")
             User.criar_conta()
         else:
             conta = User(criar_login, criar_senha)
@@ -39,13 +39,13 @@ class User:
             linha = linha.strip()
             usuario.append(linha)
         arquivo.close()
-        entrar_login = input("Digite o login: ")
+        entrar_login = input("\nDigite o login: ")
         entrar_senha = input("Digite a senha: ")
 
         if entrar_login == usuario[0] and entrar_senha == usuario[1]:
-            print(f"*** Bem vindo {entrar_login.title()} ***")
+            print(f"\n*** Bem vindo {entrar_login.title()} ***")
         else:
-            print("Usuário ou senha incorretos, tente novamente")
+            print("\nUsuário ou senha incorretos, tente novamente!")
             User.entrar()
 
     @staticmethod
