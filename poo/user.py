@@ -25,39 +25,54 @@ class User:
             User.criar_conta()
         else:
             conta = User(criar_login, criar_senha)
-            with open("dados.txt", "w") as arquivo:
-                arquivo.write(f"{conta.login}\n")
-                arquivo.write(f"{conta.senha}")
+            with open("dados.txt", "a") as arquivo:
+                arquivo.write(f"{conta.login},{conta.senha}\n")
             arquivo.close()
             User.cria_hash()
 
     @staticmethod
     def entrar():
         arquivo = open("dados.txt", "r")
-        usuario = []
+        usuarios = []
         for linha in arquivo:
-            linha = linha.strip()
-            usuario.append(linha)
+            usuarios.append(linha.strip().split(','))
         arquivo.close()
+
+        nameusers = []
+        senhausers = []
+        for i in usuarios:
+            nameusers.append(i[0])
+            senhausers.append(i[1])
+
         entrar_login = input("\nDigite o login: ")
         entrar_senha = input("Digite a senha: ")
 
-        if entrar_login == usuario[0] and entrar_senha == usuario[1]:
-            print(f"\n*** Bem vindo {entrar_login.title()} ***")
-        else:
-            print("\nUsuário ou senha incorretos, tente novamente!")
-            User.entrar()
+        k = 0
+        while True:
+            if entrar_login == nameusers[k]:
+                if entrar_senha == senhausers[k]:
+                    print(f"\n*** Bem vindo {entrar_login.title()} ***")
+                    break
+            else:
+                k = k + 1
 
     @staticmethod
     def cria_hash():
         arquivo = open("dados.txt", "r")
-        usuario = []
+        usuarios = []
         for linha in arquivo:
-            linha = linha.strip()
-            usuario.append(linha)
+            usuarios.append(linha.strip().split(','))
         arquivo.close()
-        senha_bit = usuario[1].encode()
-        arquivo_hash = open("hash.txt", "w")
-        hash_senha = str(hashlib.md5(senha_bit).hexdigest())
-        arquivo_hash.writelines(hash_senha)
+
+        senhausers = []
+        for i in usuarios:
+            senhausers.append(i[1])
+
+        arquivo_hash = open("hash.txt", "a")
+        k = 1
+        for senha in senhausers:
+            senha_bit = senha.encode()
+            hash_senha = str(hashlib.md5(senha_bit).hexdigest())
+            arquivo_hash.write(f"{k}:{hash_senha}\n")
+            k = k + 1
         arquivo_hash.close()
