@@ -1,4 +1,6 @@
 import hashlib
+import time
+import sys
 
 
 class User:
@@ -44,17 +46,43 @@ class User:
             nameusers.append(i[0])
             senhausers.append(i[1])
 
-        entrar_login = input("\nDigite o login: ")
-        entrar_senha = input("Digite a senha: ")
-
-        k = 0
+        check = False
+        tentativas = 0
+        tempo = 31
         while True:
-            if entrar_login == nameusers[k]:
-                if entrar_senha == senhausers[k]:
-                    print(f"\n*** Bem vindo {entrar_login.title()} ***")
-                    break
-            else:
-                k = k + 1
+            entrar_login = input("\nDigite o login: ")
+            entrar_senha = input("Digite a senha: ")
+            try:
+                k = 0
+                while True:
+                    if entrar_login == nameusers[k]:
+                        try:
+                            j = 0
+                            while True:
+                                if entrar_senha == senhausers[j]:
+                                    print(f"\n*** Bem vindo {entrar_login.title()} ***")
+                                    check = True
+                                    break
+                                else:
+                                    j = j + 1
+                        except IndexError:
+                            print("\nLogin ou senha incorretos!")
+                            tentativas = tentativas + 1
+                        break
+                    else:
+                        k = k + 1
+            except IndexError:
+                print("\nLogin ou senha incorretos!")
+                tentativas = tentativas + 1
+            if check:
+                break
+            elif tentativas == 3:
+                for t in range(0, tempo):
+                    sys.stdout.write(f"\rTempo de espera: {t} seg")
+                    sys.stdout.flush()
+                    time.sleep(1)
+                tentativas = 0
+                tempo = tempo + 30
 
     @staticmethod
     def cria_hash():
