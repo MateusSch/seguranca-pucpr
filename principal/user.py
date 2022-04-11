@@ -1,6 +1,5 @@
 import hashlib
-import time
-import sys
+import block
 
 
 class User:
@@ -30,22 +29,17 @@ class User:
             with open("dados.txt", "a") as arquivo:
                 arquivo.write(f"{conta.login},{conta.senha}\n")
             arquivo.close()
-            User.cria_hash()
+            User.cria_hash(criar_senha)
 
     @staticmethod
     def entrar():
         arquivo = open("dados.txt", "r")
-        usuarios = []
-        for linha in arquivo:
-            usuarios.append(linha.strip().split(','))
-        arquivo.close()
-
         nameusers = []
         senhausers = []
-        for i in usuarios:
-            nameusers.append(i[0])
-            senhausers.append(i[1])
-
+        for linha in arquivo:
+            nameusers.append(linha.strip().split(',')[0])
+            senhausers.append(linha.strip().split(',')[1])
+        arquivo.close()
         check = False
         tentativas = 0
         tempo = 31
@@ -77,30 +71,18 @@ class User:
             if check:
                 break
             elif tentativas == 3:
-                for t in range(0, tempo):
-                    sys.stdout.write(f"\rTempo de espera: {t} seg")
-                    sys.stdout.flush()
-                    time.sleep(1)
+                block.bloquear(tempo)
                 tentativas = 0
                 tempo = tempo + 30
 
     @staticmethod
-    def cria_hash():
-        arquivo = open("dados.txt", "r")
-        usuarios = []
+    def cria_hash(senha):
+        arquivo = open("hash.txt", "r")
+        senhausers = 0
         for linha in arquivo:
-            usuarios.append(linha.strip().split(','))
+            senhausers = int(linha.strip().split(':')[0]) + 1
         arquivo.close()
-
-        senhausers = []
-        for i in usuarios:
-            senhausers.append(i[1])
-
-        arquivo_hash = open("hash.txt", "a")
-        k = 1
-        for senha in senhausers:
-            senha_bit = senha.encode()
-            hash_senha = str(hashlib.md5(senha_bit).hexdigest())
-            arquivo_hash.write(f"{k}:{hash_senha}\n")
-            k = k + 1
+        with open("hash.txt", "a") as arquivo_hash:
+            hash_senha = str(hashlib.md5(senha.encode()).hexdigest())
+            arquivo_hash.writelines(f"{senhausers}:{hash_senha}\n")
         arquivo_hash.close()
