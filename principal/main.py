@@ -2,7 +2,7 @@ from user import User
 
 
 def menu():
-    while True:
+    while True:  # Volta sempre pro menu
         try:
             entrada = int(input("\nBem vindo!\n"
                                 "1 - Criar usuário\n"
