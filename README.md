@@ -11,7 +11,7 @@ Os arquivos txt é onde está salvo os dados do usuário e os hashs.
 ### Force
 #### Item 2
 
-O arquivo force.py tem a função de "descobrir" a senha atrás do hash que está salvo no arquivo txt.
+O arquivo force.py tem a função de "descobrir" a senha atrás do hash que está salvo em um arquivo txt.
 No meu computador demora 3min e 17 seg para a quebra dos hashs.
 
 ![img.png](https://user-images.githubusercontent.com/91134992/163028555-98754678-af02-4812-932b-4f49497c364c.png)

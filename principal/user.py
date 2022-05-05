@@ -20,19 +20,25 @@ class User:
         """
         Cria um usuário com até 4 caracteres no login e na senha, não aceita mais do que isso.
         Depois salva o login e a senha em um arquivo txt. E chama a função criar_hash, passando a senha como parâmetro.
+        Não aceita usuário que já existe, tem que ter um username diferente.
         """
         print("\n*** O usuário e a senha deve ter no máximo 4 caracteres ***\n")
         criar_login = input("Criar login: ")
         criar_senha = input("Criar senha: ")
-        if len(criar_login) > 4 or len(criar_senha) > 4:  # Verifica o tamanho do login e da senha
+        verifica_user = User.verifica_username(criar_login)
+        if verifica_user is True:  # Verifica se o usuário já existe
+            print("\nJá existe esse Usuário!")
+            User.criar_conta()
+        elif len(criar_login) > 4 or len(criar_senha) > 4:  # Verifica o tamanho do login e da senha
             print("\nTente criar novamente!")
             User.criar_conta()
         else:
-            conta = User(criar_login, criar_senha)   # Chama a função construtora
+            conta = User(criar_login, criar_senha)  # Chama a função construtora
             with open("dados.txt", "a") as arquivo:  # Salva os dados em um arquivo txt, separando eles por uma vírgula
                 arquivo.write(f"{conta.login},{conta.senha}\n")
             arquivo.close()
             User.cria_hash(criar_senha)  # Chama a função de criar hash, passando somente a senha como parâmetro
+            print("\nUsuário criado com sucesso!")
 
     @staticmethod
     def separa_dados():
@@ -49,6 +55,22 @@ class User:
             senhausers.append(linha.strip().split(',')[1])
         arquivo.close()
         return nameusers, senhausers
+
+    @staticmethod
+    def verifica_username(user):
+        """
+        Verifica se o username já existe.
+
+        :param user: Username que o usuário quer criar.
+        :return: True caso exista o username e False caso não exista.
+        """
+        nameusers = User.separa_dados()[0]  # Lista com todos os user existentes
+        existe = False
+        for name in nameusers:
+            if name == user:
+                existe = True
+                break
+        return existe
 
     @staticmethod
     def entrar():
@@ -71,16 +93,11 @@ class User:
                 k = 0
                 while True:
                     if entrar_login == nameusers[k]:  # Verifica o login
-                        try:
-                            j = 0
-                            while True:
-                                if entrar_senha == senhausers[j]:  # Verifica a senha
-                                    print(f"\n*** Bem vindo {entrar_login.title()} ***")
-                                    check = True
-                                    break
-                                else:
-                                    j = j + 1
-                        except IndexError:  # Conta mais uma tentativa se estiver errada a senha
+                        if entrar_senha == senhausers[k]:  # Verifica a senha
+                            print(f"\n*** Bem vindo {entrar_login.title()} ***")
+                            check = True
+                            break
+                        else:
                             print("\nLogin ou senha incorretos!")
                             tentativas = tentativas + 1
                         break
